@@ -1,3 +1,13 @@
+import { assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
+
+Deno.test({
+  name: "a test case",
+  fn() {
+    let someCondition = true;
+    assert(someCondition);
+  },
+});
+
 export enum TokenType {
 	Number,
 	Identifier,
@@ -89,3 +99,7 @@ export function tokenize(sourceCode: string): Token[] {
 
 	return tokens;
 }
+const source = await Deno.readTextFile("./test.ts");
+	for (const token of tokenize (source)) {
+		console.log(token)
+	}
