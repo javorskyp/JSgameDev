@@ -1,13 +1,3 @@
-import { assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
-
-Deno.test({
-  name: "a test case",
-  fn() {
-    let someCondition = true;
-    assert(someCondition);
-  },
-});
-
 export enum TokenType {
 	Number,
 	Identifier,
