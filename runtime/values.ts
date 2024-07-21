@@ -1,38 +1,34 @@
-export type ValueType = "null" | "number" | "boolean";
+import Parser from "./frontend/parser.ts";
+import Environment from "./runtime/environment.ts";
+import { evaluate } from "./runtime/interpreter.ts";
+import { MK_BOOL, MK_NULL, MK_NUMBER } from "./runtime/values.ts";
+repl();
 
-export interface RuntimeVal {
-  type: ValueType;
-}
+function repl() {
+  const parser = new Parser();
+  const env = new Environment();
 
-/**
- * Defines a value of undefined meaning
- */
-export interface NullVal extends RuntimeVal {
-  type: "null";
-  value: null;
-}
+  // Create Default Global Enviornment
+  env.declareVar("x", MK_NUMBER(100));
+  env.declareVar("true", MK_BOOL(true));
+  env.declareVar("false", MK_BOOL(false));
+  env.declareVar("null", MK_NULL());
 
-export function MK_NULL() {
-  return { type: "null", value: null } as NullVal;
-}
+  // INITIALIZE REPL
+  console.log("\nRepl v0.1");
 
-export interface BooleanVal extends RuntimeVal {
-  type: "boolean";
-  value: boolean;
-}
+  // Continue Repl Until User Stops Or Types `exit`
+  while (true) {
+    const input = prompt("> ");
+    // Check for no user input or exit keyword.
+    if (!input || input.includes("exit")) {
+      Deno.exit(1);
+    }
 
-export function MK_BOOL(b = true) {
-  return { type: "boolean", value: b } as BooleanVal;
-}
+    // Produce AST From sourc-code
+    const program = parser.produceAST(input);
 
-/**
- * Runtime value that has access to the raw native javascript number.
- */
-export interface NumberVal extends RuntimeVal {
-  type: "number";
-  value: number;
-}
-
-export function MK_NUMBER(n = 0) {
-  return { type: "number", value: n } as NumberVal;
+    const result = evaluate(program, env);
+    console.log(result);
+  }
 }
